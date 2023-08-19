@@ -1,0 +1,7 @@
+Users
+
+getUsers - return all users with their profiles GET
+getUsers (by role) - return users with profiles by role GET + body role
+updateUser - PATCH 
+addUser - POST
+removeUser - DELETE
