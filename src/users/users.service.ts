@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Profile } from 'src/profiles/profiles.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './users.model';
 
@@ -13,7 +14,7 @@ export class UsersService {
   }
 
   async getAllUsers() {
-    const users = await this.userModel.findAll();
+    const users = await this.userModel.findAll({ include: [Profile] });
     return users;
   }
 }

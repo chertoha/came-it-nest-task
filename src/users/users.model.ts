@@ -1,4 +1,6 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { ApiProperty } from '@nestjs/swagger';
+import { Column, DataType, HasOne, Model, Table } from 'sequelize-typescript';
+import { Profile } from 'src/profiles/profiles.model';
 
 interface IUserCreationAttrs {
   username: string;
@@ -7,6 +9,7 @@ interface IUserCreationAttrs {
 
 @Table({ tableName: 'users' })
 export class User extends Model<User, IUserCreationAttrs> {
+  @ApiProperty({ example: '1', description: 'Unique value' })
   @Column({
     type: DataType.INTEGER,
     unique: true,
@@ -15,6 +18,7 @@ export class User extends Model<User, IUserCreationAttrs> {
   })
   id: number;
 
+  @ApiProperty({ example: 'chertoha_13', description: 'User short name' })
   @Column({
     type: DataType.STRING,
     unique: true,
@@ -22,6 +26,7 @@ export class User extends Model<User, IUserCreationAttrs> {
   })
   username: string;
 
+  @ApiProperty({ example: 'email@mail.com', description: 'E-mail' })
   @Column({
     type: DataType.STRING,
     unique: true,
@@ -29,9 +34,13 @@ export class User extends Model<User, IUserCreationAttrs> {
   })
   email: string;
 
+  @ApiProperty({ example: 'afmin', description: 'User role' })
   @Column({
     type: DataType.STRING,
     defaultValue: 'guest',
   })
   role: string;
+
+  @HasOne(() => Profile, { foreignKey: 'profileId' })
+  profile: Profile;
 }
