@@ -4,7 +4,8 @@ import { Profile } from 'src/profiles/profiles.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './users.model';
 import { Sequelize } from 'sequelize-typescript';
-import { GetUserQueryDto } from './dto/get-user-query';
+import { GetUserByRoleDto } from './dto/get-user-by-role';
+import { UpdateUserDto } from './dto/update-user-dto';
 
 @Injectable()
 export class UsersService {
@@ -15,9 +16,6 @@ export class UsersService {
   ) {}
 
   async createUser(dto: CreateUserDto) {
-    // const user = await this.userModel.create(dto);
-    // return user;
-
     try {
       const result = await this.sequelize.transaction(async (t) => {
         const profile = await this.profileModel.create(dto, { transaction: t });
@@ -28,18 +26,13 @@ export class UsersService {
         );
         return user;
       });
-
       return result;
-      // If the execution reaches this line, the transaction has been committed successfully
-      // `result` is whatever was returned from the transaction callback (the `user`, in this case)
     } catch (error) {
       console.log(error);
-      // If the execution reaches this line, an error occurred.
-      // The transaction has already been rolled back automatically by Sequelize!
     }
   }
 
-  async getAllUsers(query?: GetUserQueryDto) {
+  async getAllUsers(query?: GetUserByRoleDto) {
     const conditions = query && query.role ? { role: query.role } : {};
 
     const users = await this.userModel.findAll({
@@ -47,5 +40,28 @@ export class UsersService {
       where: conditions,
     });
     return users;
+  }
+
+  async updateUser(id: string, dto: UpdateUserDto) {
+    try {
+      const result = await this.sequelize.transaction(async (t) => {
+        const user = await this.userModel.findByPk(id, {
+          include: [Profile],
+          transaction: t,
+        });
+
+        if (!user) {
+          console.log('error user not found!');
+        }
+
+        await user.profile.update({ ...dto }, { transaction: t });
+        const updatedUser = await user.update({ ...dto }, { transaction: t });
+
+        return { ...updatedUser, ...updatedUser.profile };
+      });
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

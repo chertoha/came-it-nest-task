@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GetUserQueryDto {
+export class GetUserByRoleDto {
   @ApiProperty({ example: 'admin', description: 'User role' })
   readonly role: string;
 }

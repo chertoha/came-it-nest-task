@@ -48,9 +48,6 @@ export class User extends Model<User, IUserCreationAttrs> {
   })
   role: string;
 
-  // @HasOne(() => Profile, { foreignKey: 'userId' })
-  // profile: Profile;
-
   @BelongsTo(() => Profile, { foreignKey: 'profileId' })
   profile: Profile;
 }

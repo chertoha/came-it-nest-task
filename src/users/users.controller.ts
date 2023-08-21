@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
-import { GetUserQueryDto } from './dto/get-user-query';
+import { GetUserByRoleDto } from './dto/get-user-by-role';
+import { UpdateUserDto } from './dto/update-user-dto';
 import { User } from './users.model';
 import { UsersService } from './users.service';
 
@@ -13,14 +22,19 @@ export class UsersController {
   @ApiOperation({ summary: 'Create new user' })
   @ApiResponse({ status: 200, type: User })
   @Post()
-  create(@Body() userDto: CreateUserDto) {
-    return this.userService.createUser(userDto);
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.createUser(createUserDto);
   }
 
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, type: [User] })
   @Get()
-  getAll(@Query() query: GetUserQueryDto) {
+  getAll(@Query() query: GetUserByRoleDto) {
     return this.userService.getAllUsers(query);
+  }
+
+  @Patch(':id')
+  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updateUser(id, updateUserDto);
   }
 }
