@@ -3,6 +3,7 @@ import {
   BelongsTo,
   Column,
   DataType,
+  HasOne,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -39,6 +40,9 @@ export class Profile extends Model<Profile> {
   })
   state: string;
 
-  @BelongsTo(() => User, { foreignKey: 'userId' })
+  // @BelongsTo(() => User, { foreignKey: 'userId' })
+  // user: User;
+
+  @HasOne(() => User, { foreignKey: 'profileId' })
   user: User;
 }

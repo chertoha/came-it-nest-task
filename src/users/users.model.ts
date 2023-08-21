@@ -1,10 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, HasOne, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { Profile } from 'src/profiles/profiles.model';
 
 interface IUserCreationAttrs {
   username: string;
   email: string;
+  profileId?: number;
 }
 
 @Table({ tableName: 'users' })
@@ -41,6 +48,9 @@ export class User extends Model<User, IUserCreationAttrs> {
   })
   role: string;
 
-  @HasOne(() => Profile, { foreignKey: 'profileId' })
+  // @HasOne(() => Profile, { foreignKey: 'userId' })
+  // profile: Profile;
+
+  @BelongsTo(() => Profile, { foreignKey: 'profileId' })
   profile: Profile;
 }

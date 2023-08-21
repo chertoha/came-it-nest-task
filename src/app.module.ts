@@ -23,6 +23,7 @@ import { Profile } from './profiles/profiles.model';
       database: process.env.POSTGRES_DB,
       models: [User, Profile],
       autoLoadModels: true,
+      synchronize: true,
     }),
     UsersModule,
     ProfilesModule,
