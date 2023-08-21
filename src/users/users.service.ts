@@ -4,6 +4,7 @@ import { Profile } from 'src/profiles/profiles.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './users.model';
 import { Sequelize } from 'sequelize-typescript';
+import { GetUserQueryDto } from './dto/get-user-query';
 
 @Injectable()
 export class UsersService {
@@ -38,8 +39,13 @@ export class UsersService {
     }
   }
 
-  async getAllUsers() {
-    const users = await this.userModel.findAll({ include: [Profile] });
+  async getAllUsers(query?: GetUserQueryDto) {
+    const conditions = query && query.role ? { role: query.role } : {};
+
+    const users = await this.userModel.findAll({
+      include: [Profile],
+      where: conditions,
+    });
     return users;
   }
 }

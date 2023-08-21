@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
+import { GetUserQueryDto } from './dto/get-user-query';
 import { User } from './users.model';
 import { UsersService } from './users.service';
 
@@ -19,7 +20,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, type: [User] })
   @Get()
-  getAll() {
-    return this.userService.getAllUsers();
+  getAll(@Query() query: GetUserQueryDto) {
+    return this.userService.getAllUsers(query);
   }
 }
