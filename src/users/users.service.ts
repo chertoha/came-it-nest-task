@@ -57,7 +57,32 @@ export class UsersService {
         await user.profile.update({ ...dto }, { transaction: t });
         const updatedUser = await user.update({ ...dto }, { transaction: t });
 
-        return { ...updatedUser, ...updatedUser.profile };
+        return updatedUser.get();
+      });
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async removeUser(id: string) {
+    try {
+      const result = await this.sequelize.transaction(async (t) => {
+        const user = await this.userModel.findByPk(id, {
+          include: [Profile],
+          transaction: t,
+        });
+
+        const deletedUser = user.get();
+
+        if (!user) {
+          console.log('error user not found!');
+        }
+
+        await user.profile.destroy({ transaction: t });
+        await user.destroy({ transaction: t });
+
+        return deletedUser;
       });
       return result;
     } catch (error) {

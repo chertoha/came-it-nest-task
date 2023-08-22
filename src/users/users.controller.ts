@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -36,5 +37,10 @@ export class UsersController {
   @Patch(':id')
   updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.updateUser(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  removeUser(@Param('id') id: string) {
+    return this.userService.removeUser(id);
   }
 }
