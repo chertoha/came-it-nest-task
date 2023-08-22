@@ -34,11 +34,15 @@ export class UsersController {
     return this.userService.getAllUsers(query);
   }
 
+  @ApiOperation({ summary: 'Update user' })
+  @ApiResponse({ status: 200, type: User })
   @Patch(':id')
   updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.updateUser(id, updateUserDto);
   }
 
+  @ApiOperation({ summary: 'Delete user' })
+  @ApiResponse({ status: 200, type: User })
   @Delete(':id')
   removeUser(@Param('id') id: string) {
     return this.userService.removeUser(id);
