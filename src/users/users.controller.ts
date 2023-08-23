@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -11,7 +12,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserByRoleDto } from './dto/get-user-by-role';
-import { UpdateUserDto } from './dto/update-user-dto';
+// import { UpdateUserDto } from './dto/update-user-dto';
 import { User } from './users.model';
 import { UsersService } from './users.service';
 
@@ -34,17 +35,30 @@ export class UsersController {
     return this.userService.getAllUsers(query);
   }
 
+  // @ApiOperation({ summary: 'Update user' })
+  // @ApiResponse({ status: 200, type: User })
+  // @Patch(':id')
+  // updateUser(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() updateUserDto: UpdateUserDto,
+  // ) {
+  //   return this.userService.updateUser(id, updateUserDto);
+  // }
+
   @ApiOperation({ summary: 'Update user' })
   @ApiResponse({ status: 200, type: User })
   @Patch(':id')
-  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: CreateUserDto,
+  ) {
     return this.userService.updateUser(id, updateUserDto);
   }
 
   @ApiOperation({ summary: 'Delete user' })
   @ApiResponse({ status: 200, type: User })
   @Delete(':id')
-  removeUser(@Param('id') id: string) {
+  removeUser(@Param('id', ParseIntPipe) id: number) {
     return this.userService.removeUser(id);
   }
 }

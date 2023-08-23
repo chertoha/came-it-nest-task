@@ -5,7 +5,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './users.model';
 import { Sequelize } from 'sequelize-typescript';
 import { GetUserByRoleDto } from './dto/get-user-by-role';
-import { UpdateUserDto } from './dto/update-user-dto';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +41,7 @@ export class UsersService {
     return users;
   }
 
-  async updateUser(id: string, dto: UpdateUserDto) {
+  async updateUser(id: number, dto: CreateUserDto) {
     try {
       const result = await this.sequelize.transaction(async (t) => {
         const user = await this.userModel.findByPk(id, {
@@ -65,7 +64,7 @@ export class UsersService {
     }
   }
 
-  async removeUser(id: string) {
+  async removeUser(id: number) {
     try {
       const result = await this.sequelize.transaction(async (t) => {
         const user = await this.userModel.findByPk(id, {
