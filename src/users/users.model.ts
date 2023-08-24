@@ -7,11 +7,12 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Profile } from 'src/profiles/profiles.model';
+import { CreateUserDto } from './dto/create-user.dto';
 
 interface IUserCreationAttrs {
   username: string;
   email: string;
-  profileId?: number;
+  profile?: CreateUserDto;
 }
 
 @Table({ tableName: 'users' })

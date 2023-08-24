@@ -1,7 +1,5 @@
 import {
   ConflictException,
-  HttpException,
-  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -23,35 +21,22 @@ export class UsersService {
   ) {}
 
   async createUser(dto: CreateUserDto) {
-    try {
-      const result = await this.sequelize.transaction(async (t) => {
-        const checkUser = await this.userModel.findOne({
-          where: {
-            [Op.or]: [{ username: dto.username }, { email: dto.email }],
-          },
-        });
+    const [user, created] = await this.userModel.findOrCreate({
+      where: {
+        [Op.or]: [{ username: dto.username }, { email: dto.email }],
+      },
+      defaults: {
+        ...dto,
+        profile: { ...dto },
+      },
+      include: [Profile],
+    });
 
-        if (checkUser) {
-          console.log('USER EXIST!!!', checkUser);
-          throw new ConflictException('User is already exist');
-        }
-
-        const profile = await this.profileModel.create(dto, {
-          transaction: t,
-        });
-
-        const user = await this.userModel.create(
-          { profileId: profile.id, ...dto },
-          { transaction: t },
-        );
-        return user;
-      });
-      return result;
-    } catch (error) {
-      console.log(error);
-
-      throw new CommonException(error.message, error.status);
+    if (!created) {
+      throw new ConflictException('User is already exist');
     }
+
+    return user;
   }
 
   async getAllUsers(query?: GetUserByRoleDto) {
