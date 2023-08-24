@@ -11,6 +11,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { GetUserByRoleDto } from './dto/get-user-by-role';
 import { Op } from 'sequelize';
 import { CommonException } from 'src/exceptions/common.exception';
+import { UpdateUserDto } from './dto/update-user-dto';
 
 @Injectable()
 export class UsersService {
@@ -51,12 +52,13 @@ export class UsersService {
         },
       ],
       where: conditions,
+      order: ['id'],
       attributes: { exclude: ['profileId', 'createdAt', 'updatedAt'] },
     });
     return users;
   }
 
-  async updateUser(id: number, dto: CreateUserDto) {
+  async updateUser(id: number, dto: UpdateUserDto) {
     try {
       const result = await this.sequelize.transaction(async (t) => {
         const user = await this.userModel.findByPk(id, {
