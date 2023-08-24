@@ -41,9 +41,10 @@ export class User extends Model<User, IUserCreationAttrs> {
   })
   email: string;
 
-  @ApiProperty({ example: 'afmin', description: 'User role' })
+  @ApiProperty({ example: 'admin', description: 'User role' })
   @Column({
-    type: DataType.STRING,
+    type: DataType.ENUM,
+    values: ['admin', 'guest', 'user'],
     defaultValue: 'guest',
   })
   role: string;

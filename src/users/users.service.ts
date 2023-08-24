@@ -1,10 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Profile } from 'src/profiles/profiles.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './users.model';
 import { Sequelize } from 'sequelize-typescript';
 import { GetUserByRoleDto } from './dto/get-user-by-role';
+import { Op } from 'sequelize';
+import { CommonException } from 'src/exceptions/common.exception';
 
 @Injectable()
 export class UsersService {
@@ -17,7 +25,20 @@ export class UsersService {
   async createUser(dto: CreateUserDto) {
     try {
       const result = await this.sequelize.transaction(async (t) => {
-        const profile = await this.profileModel.create(dto, { transaction: t });
+        const checkUser = await this.userModel.findOne({
+          where: {
+            [Op.or]: [{ username: dto.username }, { email: dto.email }],
+          },
+        });
+
+        if (checkUser) {
+          console.log('USER EXIST!!!', checkUser);
+          throw new ConflictException('User is already exist');
+        }
+
+        const profile = await this.profileModel.create(dto, {
+          transaction: t,
+        });
 
         const user = await this.userModel.create(
           { profileId: profile.id, ...dto },
@@ -28,6 +49,8 @@ export class UsersService {
       return result;
     } catch (error) {
       console.log(error);
+
+      throw new CommonException(error.message, error.status);
     }
   }
 
@@ -50,7 +73,7 @@ export class UsersService {
         });
 
         if (!user) {
-          console.log('error user not found!');
+          throw new NotFoundException('User not found');
         }
 
         await user.profile.update({ ...dto }, { transaction: t });
@@ -60,7 +83,7 @@ export class UsersService {
       });
       return result;
     } catch (error) {
-      console.log(error);
+      throw new CommonException(error.message, error.status);
     }
   }
 
@@ -72,11 +95,11 @@ export class UsersService {
           transaction: t,
         });
 
-        const deletedUser = user.get();
-
         if (!user) {
-          console.log('error user not found!');
+          throw new NotFoundException('User not found');
         }
+
+        const deletedUser = user.get();
 
         await user.profile.destroy({ transaction: t });
         await user.destroy({ transaction: t });
@@ -85,7 +108,7 @@ export class UsersService {
       });
       return result;
     } catch (error) {
-      console.log(error);
+      throw new CommonException(error.message, error.status);
     }
   }
 }
