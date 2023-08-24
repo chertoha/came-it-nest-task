@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  BelongsTo,
-  Column,
-  DataType,
-  HasOne,
-  Model,
-  Table,
-} from 'sequelize-typescript';
+import { Column, DataType, HasOne, Model, Table } from 'sequelize-typescript';
 import { User } from 'src/users/users.model';
 
 @Table({ tableName: 'profiles' })
