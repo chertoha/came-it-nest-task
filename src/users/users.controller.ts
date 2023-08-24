@@ -22,7 +22,7 @@ export class UsersController {
   constructor(private userService: UsersService) {}
 
   @ApiOperation({ summary: 'Create new user' })
-  @ApiResponse({ status: 200, type: User })
+  @ApiResponse({ status: 201, type: User })
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
