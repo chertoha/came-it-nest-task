@@ -30,6 +30,7 @@ export class UsersService {
         profile: { ...dto },
       },
       include: [Profile],
+      attributes: { exclude: ['profileId', 'createdAt', 'updatedAt'] },
     });
 
     if (!created) {
@@ -43,8 +44,14 @@ export class UsersService {
     const conditions = query && query.role ? { role: query.role } : {};
 
     const users = await this.userModel.findAll({
-      include: [Profile],
+      include: [
+        {
+          model: Profile,
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
+        },
+      ],
       where: conditions,
+      attributes: { exclude: ['profileId', 'createdAt', 'updatedAt'] },
     });
     return users;
   }
