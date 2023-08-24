@@ -70,8 +70,6 @@ export class UsersService {
           throw new NotFoundException('User not found');
         }
 
-        // Check for username and email
-        // let existingUser: User | null = null;
         const existingUser = await this.checkIsUserExistedByUsernameAndEmail(
           id,
           dto,
@@ -81,27 +79,6 @@ export class UsersService {
         if (existingUser) {
           throw new ConflictException('Username or email already exists');
         }
-        // Check for username and email
-        // const whereConditions = [];
-        // if (dto.username) {
-        //   whereConditions.push({ username: dto.username });
-        // }
-
-        // if (dto.email) {
-        //   whereConditions.push({ email: dto.email });
-        // }
-
-        // const existingUser = this.userModel.findOne({
-        //   where: {
-        //     [Op.or]: whereConditions,
-        //   },
-        //   transaction: t,
-        // });
-
-        // if (existingUser && existingUser.id !== id) {
-        //   console.log('!!!!!!!!!!!!!!');
-        //   throw new ConflictException('Username or email are already existed');
-        // }
 
         await user.profile.update({ ...dto }, { transaction: t });
         const updatedUser = await user.update({ ...dto }, { transaction: t });
